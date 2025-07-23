@@ -1,12 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <WebView
         android:id="@+id/webview"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-</LinearLayout>
+        android:layout_height="match_parent" />
+
+    <!-- Popover Menu -->
+    <LinearLayout
+        android:id="@+id/popover_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#CC000000"
+        android:padding="30dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:elevation="10dp">
+
+        <Button
+            android:id="@+id/btn_home"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:text="🏠"
+            android:textSize="36sp"
+            android:background="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:layout_marginEnd="15dp" />
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:text="⬅️"
+            android:textSize="36sp"
+            android:background="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:layout_marginEnd="15dp" />
+
+        <Button
+            android:id="@+id/btn_forward"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:text="➡️"
+            android:textSize="36sp"
+            android:background="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:layout_marginEnd="15dp" />
+
+        <Button
+            android:id="@+id/btn_toggle_top_padding"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:text="👇"
+            android:textSize="36sp"
+            android:background="#FF9800"
+            android:textColor="#FFFFFF"
+            android:layout_marginEnd="15dp" />
+
+        <Button
+            android:id="@+id/btn_toggle_right_padding"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:text="👈"
+            android:textSize="36sp"
+            android:background="#FF9800"
+            android:textColor="#FFFFFF" />
+
+    </LinearLayout>
+
+</RelativeLayout>
