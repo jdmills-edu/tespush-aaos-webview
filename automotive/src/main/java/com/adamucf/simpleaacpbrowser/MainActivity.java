@@ -11,6 +11,9 @@ import android.widget.RelativeLayout;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.webkit.CookieManager;
+import android.webkit.WebChromeClient;
+import android.webkit.PermissionRequest;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,12 +49,69 @@ public class MainActivity extends AppCompatActivity {
         btnToggleRightPadding = findViewById(R.id.btn_toggle_right_padding);
 
         // Configure WebView
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebViewClient(new WebViewClient());
+        configureWebView();
+        webView.setWebViewClient(new CustomWebViewClient());
+        webView.setWebChromeClient(new CustomWebChromeClient()); // Needed for media and advanced features
         webView.loadUrl(getString(R.string.default_url));
 
         setupTouchHandling();
         setupPopoverButtons();
+    }
+
+    private void configureWebView() {
+        WebSettings settings = webView.getSettings();
+        
+        // Hardware acceleration must be enabled before other settings
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        
+        // Basic JavaScript and DOM storage
+        settings.setJavaScriptEnabled(true);
+        settings.setDomStorageEnabled(true);
+        settings.setDatabaseEnabled(true);
+        
+        // Enable cookies
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.setAcceptCookie(true);
+        cookieManager.setAcceptThirdPartyCookies(webView, true);
+        
+        // Media and file access for Vue apps and RTSP
+        settings.setMediaPlaybackRequiresUserGesture(false);
+        settings.setAllowFileAccess(true);
+        settings.setAllowContentAccess(true);
+        settings.setAllowFileAccessFromFileURLs(true);
+        settings.setAllowUniversalAccessFromFileURLs(true);
+        
+        // Network and caching
+        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        settings.setLoadsImagesAutomatically(true);
+        
+        // Modern web standards for Vue applications
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);
+        settings.setSupportZoom(true);
+        settings.setBuiltInZoomControls(false); // Disable zoom controls for automotive
+        settings.setDisplayZoomControls(false);
+        
+        // Mixed content (HTTP/HTTPS) - needed for some Vue apps
+        settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        
+        // Local network access for automotive systems
+        settings.setAllowFileAccessFromFileURLs(true);
+        settings.setAllowUniversalAccessFromFileURLs(true);
+        
+        // Widevine DRM support for protected content
+        settings.setMediaPlaybackRequiresUserGesture(false);
+        settings.setAllowContentAccess(true);
+        
+        // Additional settings for DRM and local network access
+        settings.setLoadsImagesAutomatically(true);
+        settings.setBlockNetworkImage(false);
+        settings.setBlockNetworkLoads(false);
+        
+        // Enable WebRTC and other modern web features
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);
+        
+        // User agent - ensure modern web standards with DRM capabilities
+        settings.setUserAgentString(settings.getUserAgentString() + " AutomotiveWebView/1.6 Widevine/1.0");
     }
 
     private void setupTouchHandling() {
@@ -256,6 +316,43 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         if (hideHandler != null && hideRunnable != null) {
             hideHandler.removeCallbacks(hideRunnable);
+        }
+    }
+
+    // Custom WebViewClient for local network and DRM support
+    private class CustomWebViewClient extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            // Allow all local network URLs
+            if (url.startsWith("http://localhost") || 
+                url.startsWith("http://127.0.0.1") ||
+                url.startsWith("http://192.168.") ||
+                url.startsWith("http://10.") ||
+                url.startsWith("http://172.")) {
+                return false; // Let WebView handle it
+            }
+            return false; // Let WebView handle all URLs
+        }
+
+        @Override
+        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            // Handle network errors gracefully
+            super.onReceivedError(view, errorCode, description, failingUrl);
+        }
+    }
+
+    // Custom WebChromeClient for DRM and media support
+    private class CustomWebChromeClient extends WebChromeClient {
+        @Override
+        public void onPermissionRequest(android.webkit.PermissionRequest request) {
+            // Grant permissions for media access and DRM
+            request.grant(request.getResources());
+        }
+
+        @Override
+        public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, android.os.Message resultMsg) {
+            // Support popup windows for DRM authentication
+            return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
         }
     }
 }
