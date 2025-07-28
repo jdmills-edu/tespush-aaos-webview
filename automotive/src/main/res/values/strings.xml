@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Riptide</string>
     <string name="default_url">https://jdmills-edu.github.io/riptide</string>
+    
+    <!-- Chromecast receiver configuration -->
+    <string name="cast_app_id">CC1AD845</string>
+    <string name="cast_receiver_name">Riptide Cast Receiver</string>
+    <string name="cast_notification_channel_id">cast_receiver_channel</string>
+    <string name="cast_notification_channel_name">Cast Receiver</string>
 </resources>

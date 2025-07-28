@@ -1,10 +1,10 @@
-# Changes Summary: 3-Finger Touch Navigation Menu
+# Changes Summary: Android Automotive WebView with Chromecast Receiver
 
 ## Version Update  
-- **Version Code**: 4 → 5 → 6 → 7 → 8
-- **Version Name**: 1.2 → 1.3 → 1.4 → 1.5 → 1.6
-- **Latest changes**: Enterprise-grade features with hardware acceleration, Widevine DRM, and local network access
-- **Privacy Update**: Removed RECORD_AUDIO permission for enhanced privacy
+- **Version Code**: 4 → 5 → 6 → 7 → 8 → 9
+- **Version Name**: 1.2 → 1.3 → 1.4 → 1.5 → 1.6 → 1.7
+- **Latest changes**: Always-running background Chromecast receiver with full remote control capabilities
+- **Major Feature**: Added comprehensive Google Cast receiver functionality for remote WebView control
 
 ## Overview
 Replaced the previous touch-activated navigation bar with a 3-finger touch activated popover menu system.
@@ -123,3 +123,74 @@ Replaced the previous touch-activated navigation bar with a 3-finger touch activ
 - Uses emoji characters for intuitive button identification
 - Responsive design with proper scaling (dp to px conversion)
 - Modern WebView configuration for advanced web applications
+
+## Version 1.7 - Chromecast Receiver Feature
+
+### New Components Added
+
+#### 1. Google Cast SDK Integration
+- **Dependencies**: Added Google Cast Framework (21.3.0), Media Router, mDNS/DNS-SD support
+- **Service Architecture**: Always-running background service with foreground notification
+- **Cast App ID**: CC1AD845 (Default Media Receiver)
+
+#### 2. ChromecastReceiverService
+- **Functionality**: Background service that runs continuously to receive cast commands
+- **mDNS Discovery**: Automatic service registration for Chromecast device discovery  
+- **Notification**: Persistent notification showing cast receiver status
+- **Multicast Support**: WiFi multicast lock management for service discovery
+
+#### 3. CastReceiverManager
+- **Session Management**: Handles cast session lifecycle (start, resume, suspend, end)
+- **Message Routing**: Bidirectional communication between cast sender and receiver
+- **WebView Integration**: Direct control of MainActivity WebView from remote devices
+- **Custom Namespace**: "urn:x-cast:com.adamucf.riptide" for app-specific messaging
+
+#### 4. CastMessageHandler  
+- **Command Processing**: JSON-based message parsing and execution
+- **Supported Commands**:
+  - `load_url`: Remote URL loading in WebView
+  - `execute_js`: JavaScript execution in WebView context
+  - `toggle_navigation`: Remote 3-finger menu activation
+  - `get_status`: Device status reporting
+  - `ping/pong`: Connection testing and heartbeat
+- **Error Handling**: Comprehensive error responses and logging
+
+#### 5. JavaScript Interface (CastJavaScriptInterface)
+- **Bridge Communication**: Native Android ↔ JavaScript messaging
+- **Status Reporting**: Real-time cast receiver status updates
+- **Logging Integration**: JavaScript console integration with Android logging
+
+#### 6. Cast Receiver HTML Interface
+- **User Interface**: Visual status page showing cast receiver state
+- **Styling**: Automotive-optimized design with large, clear indicators
+- **Instructions**: Built-in help for cast operation and supported commands
+
+### Enhanced Permissions
+- **Foreground Service**: FOREGROUND_SERVICE and FOREGROUND_SERVICE_MEDIA_PLAYBACK
+- **Notifications**: POST_NOTIFICATIONS for service status display
+- **Multicast**: CHANGE_WIFI_MULTICAST_STATE for mDNS service discovery
+- **NFC**: Optional NFC support for advanced device pairing
+
+### Remote Control Capabilities
+1. **URL Control**: Load any web page remotely via cast command
+2. **JavaScript Execution**: Run arbitrary JavaScript in the WebView context
+3. **Navigation Control**: Remotely trigger the 3-finger navigation menu
+4. **Status Monitoring**: Real-time device status and connection health
+5. **Bi-directional Communication**: Full duplex messaging between sender and receiver
+
+### Technical Architecture
+- **Service Pattern**: Foreground service ensures continuous operation
+- **Message Protocol**: JSON-based command/response system
+- **Network Discovery**: Standards-compliant mDNS/DNS-SD implementation  
+- **Cast Framework**: Google Cast SDK integration with custom receiver
+- **Session Management**: Robust handling of cast session lifecycle events
+- **Error Recovery**: Comprehensive error handling and service restart capability
+
+### Usage Scenarios
+1. **Remote Presentation**: Cast web presentations to automotive display
+2. **Media Control**: Remote control of web-based media applications
+3. **Navigation Assistance**: Remote URL changes for passenger convenience
+4. **Development/Testing**: Remote JavaScript execution for app debugging
+5. **Multi-device Integration**: Seamless handoff between mobile and automotive
+
+This implementation transforms the automotive WebView app into a full-featured cast receiver, enabling remote control and content casting while maintaining all existing 3-finger touch navigation and enterprise WebView capabilities.

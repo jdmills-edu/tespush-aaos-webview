@@ -1,6 +1,7 @@
 package com.adamucf.simpleaacpbrowser;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -15,6 +16,10 @@ import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
 import android.webkit.PermissionRequest;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.adamucf.simpleaacpbrowser.cast.ChromecastReceiverService;
+import com.adamucf.simpleaacpbrowser.cast.CastReceiverManager;
+import com.adamucf.simpleaacpbrowser.cast.CastJavaScriptInterface;
 
 public class MainActivity extends AppCompatActivity {
     private WebView webView;
@@ -31,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
     // Touch tracking for 3-finger detection
     private int fingerCount = 0;
     private boolean isThreeFingerTouch = false;
+    
+    // Chromecast receiver components
+    private CastReceiverManager castReceiverManager;
+    private Intent chromecastServiceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
 
         setupTouchHandling();
         setupPopoverButtons();
+        
+        // Initialize and start Chromecast receiver
+        initializeChromecastReceiver();
     }
 
     private void configureWebView() {
@@ -111,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         
         // User agent - ensure modern web standards with DRM capabilities
-        settings.setUserAgentString(settings.getUserAgentString() + " AutomotiveWebView/1.6 Widevine/1.0");
+        settings.setUserAgentString(settings.getUserAgentString() + " AutomotiveWebView/1.7 Widevine/1.0 ChromecastReceiver/1.0");
     }
 
     private void setupTouchHandling() {
@@ -317,6 +329,46 @@ public class MainActivity extends AppCompatActivity {
         if (hideHandler != null && hideRunnable != null) {
             hideHandler.removeCallbacks(hideRunnable);
         }
+        
+        // Clean up Chromecast receiver
+        if (castReceiverManager != null) {
+            castReceiverManager.destroy();
+        }
+        
+        // Stop Chromecast service
+        if (chromecastServiceIntent != null) {
+            stopService(chromecastServiceIntent);
+        }
+    }
+    
+    private void initializeChromecastReceiver() {
+        try {
+            // Start Chromecast receiver service
+            chromecastServiceIntent = new Intent(this, ChromecastReceiverService.class);
+            startForegroundService(chromecastServiceIntent);
+            
+            // Initialize Cast receiver manager
+            castReceiverManager = new CastReceiverManager(this);
+            castReceiverManager.setMainActivity(this);
+            castReceiverManager.initialize();
+            
+            // Add JavaScript interface for cast communication
+            CastJavaScriptInterface jsInterface = new CastJavaScriptInterface(this, castReceiverManager);
+            webView.addJavascriptInterface(jsInterface, "CastReceiver");
+            
+        } catch (Exception e) {
+            android.util.Log.e("MainActivity", "Failed to initialize Chromecast receiver", e);
+        }
+    }
+    
+    // Public method to get WebView for cast operations
+    public WebView getWebView() {
+        return webView;
+    }
+    
+    // Public method to toggle popover menu from cast
+    public void togglePopoverMenuFromCast() {
+        runOnUiThread(() -> togglePopoverMenu());
     }
 
     // Custom WebViewClient for local network and DRM support

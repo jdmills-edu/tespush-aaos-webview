@@ -16,6 +16,13 @@
     <!-- Widevine DRM support -->
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     
+    <!-- Chromecast receiver permissions -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <uses-permission android:name="android.permission.NFC" />
+    
     <uses-feature
         android:name="android.hardware.type.automotive"
         android:required="true" />
@@ -42,7 +49,6 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:hardwareAccelerated="true">
         <activity
-
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -51,6 +57,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <!-- Chromecast Receiver Service -->
+        <service
+            android:name=".cast.ChromecastReceiverService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback">
+            <intent-filter>
+                <action android:name="com.adamucf.simpleaacpbrowser.CAST_RECEIVER" />
+            </intent-filter>
+        </service>
+        
+        <!-- Cast Media Route Provider Service -->
+        <service
+            android:name="com.google.android.gms.cast.framework.media.MediaNotificationService"
+            android:exported="false" />
+            
+        <!-- Cast Options Provider -->
+        <meta-data
+            android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+            android:value="com.adamucf.simpleaacpbrowser.cast.ChromecastReceiverService$CastOptionsProvider" />
 
     </application>
 
