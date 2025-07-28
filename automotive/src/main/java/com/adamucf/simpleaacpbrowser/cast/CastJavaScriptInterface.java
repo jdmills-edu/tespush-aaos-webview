@@ -42,9 +42,9 @@ public class CastJavaScriptInterface {
         try {
             CastReceiverManager manager = castReceiverManagerRef.get();
             if (manager != null && manager.isInitialized()) {
-                return "{\"status\":\"ready\",\"version\":\"1.7\",\"timestamp\":" + System.currentTimeMillis() + "}";
+                return "{\"status\":\"ready\",\"version\":\"1.9\",\"timestamp\":" + System.currentTimeMillis() + "}";
             } else {
-                return "{\"status\":\"not_ready\",\"version\":\"1.7\",\"timestamp\":" + System.currentTimeMillis() + "}";
+                return "{\"status\":\"not_ready\",\"version\":\"1.9\",\"timestamp\":" + System.currentTimeMillis() + "}";
             }
         } catch (Exception e) {
             Log.e(TAG, "Error getting cast status", e);

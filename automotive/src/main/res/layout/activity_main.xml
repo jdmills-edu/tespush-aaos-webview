@@ -70,6 +70,24 @@
             android:background="#FF9800"
             android:textColor="#FFFFFF" />
 
+        <Button
+            android:id="@+id/btn_cast_receiver"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:text="📡"
+            android:textSize="36sp"
+            android:background="#9C27B0"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/btn_cast_test"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:text="🧪"
+            android:textSize="36sp"
+            android:background="#607D8B"
+            android:textColor="#FFFFFF" />
+
     </LinearLayout>
 
 </RelativeLayout>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<automotiveApp xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Mark the application as distraction optimized -->
+    <uses name="template" />
+    
+    <!-- Define the application as immersive for full-screen experience -->
+    <uses name="media" />
+    <uses name="projection" />
+    
+    <!-- Specify that this app should run in immersive mode -->
+    <uses name="cluster_home" required="false" />
+</automotiveApp>

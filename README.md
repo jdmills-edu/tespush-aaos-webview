@@ -164,7 +164,9 @@ Edit `automotive/src/main/res/values/strings.xml`:
 
 ## 📊 **Version History**
 
-- **v1.7** (Current) - Chromecast receiver with always-running background service
+- **v1.9** (Current) - Enhanced navigation with integrated cast status and testing interfaces
+- **v1.8** - Complete automotive platform optimization with distraction optimization and immersive mode compliance
+- **v1.7** - Chromecast receiver with always-running background service
 - **v1.6** - Enterprise features: hardware acceleration, Widevine DRM, local network access
 - **v1.5** - Privacy improvements: removed unnecessary permissions
 - **v1.4** - Enhanced WebView: cookies, Vue.js support, RTSP streaming

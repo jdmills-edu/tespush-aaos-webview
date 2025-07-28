@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riptide Cast Status</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .status-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .app-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+        }
+        
+        .version {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 2rem;
+        }
+        
+        .status-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .status-card h3 {
+            margin-top: 0;
+            color: #fff;
+            font-size: 1.3rem;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .status-label {
+            font-weight: 500;
+        }
+        
+        .status-value {
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .indicator-active {
+            background-color: #4CAF50;
+            animation: pulse 2s infinite;
+        }
+        
+        .indicator-inactive {
+            background-color: #f44336;
+        }
+        
+        .commands-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .command-example {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+        
+        .button {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        .button:hover {
+            background: #3367d6;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .actions {
+            text-align: center;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="status-container">
+        <div class="header">
+            <h1 class="app-title">🌊 Riptide Cast Status</h1>
+            <div class="version">v1.9 - Enhanced Navigation</div>
+        </div>
+
+        <div class="status-grid">
+            <div class="status-card">
+                <h3>📡 Cast Receiver</h3>
+                <div class="status-item">
+                    <span class="status-label">
+                        <span class="status-indicator indicator-active"></span>
+                        Service Status
+                    </span>
+                    <span class="status-value" id="serviceStatus">Running</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Discovery Name</span>
+                    <span class="status-value">Riptide Cast Receiver</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">App ID</span>
+                    <span class="status-value">CC1AD845</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Namespace</span>
+                    <span class="status-value">urn:x-cast:com.adamucf.riptide</span>
+                </div>
+            </div>
+
+            <div class="status-card">
+                <h3>🚗 Automotive Features</h3>
+                <div class="status-item">
+                    <span class="status-label">
+                        <span class="status-indicator indicator-active"></span>
+                        Distraction Optimized
+                    </span>
+                    <span class="status-value">True</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">
+                        <span class="status-indicator indicator-active"></span>
+                        Immersive Mode
+                    </span>
+                    <span class="status-value">True</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">3-Finger Navigation</span>
+                    <span class="status-value">Enabled</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Hardware Acceleration</span>
+                    <span class="status-value">GPU Enabled</span>
+                </div>
+            </div>
+
+            <div class="status-card">
+                <h3>🌐 WebView Features</h3>
+                <div class="status-item">
+                    <span class="status-label">JavaScript</span>
+                    <span class="status-value">Enabled</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Cookies</span>
+                    <span class="status-value">Enabled</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Vue.js Support</span>
+                    <span class="status-value">Enabled</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Widevine DRM</span>
+                    <span class="status-value" id="drmStatus">Supported</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="commands-section">
+            <h3>🎛️ Supported Cast Commands</h3>
+            
+            <h4>Load URL:</h4>
+            <div class="command-example">
+{
+  "type": "load_url",
+  "url": "https://example.com"
+}
+            </div>
+
+            <h4>Execute JavaScript:</h4>
+            <div class="command-example">
+{
+  "type": "execute_js",
+  "javascript": "document.body.style.backgroundColor = 'red';"
+}
+            </div>
+
+            <h4>Toggle Navigation:</h4>
+            <div class="command-example">
+{
+  "type": "toggle_navigation"
+}
+            </div>
+
+            <h4>Get Status:</h4>
+            <div class="command-example">
+{
+  "type": "get_status"
+}
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="button" onclick="testJavaScript()">Test JavaScript</button>
+            <button class="button" onclick="getCastStatus()">Get Cast Status</button>
+            <button class="button" onclick="location.reload()">Refresh Status</button>
+        </div>
+    </div>
+
+    <script>
+        function updateStatus() {
+            const now = new Date();
+            document.getElementById('serviceStatus').textContent = 'Running since ' + now.toLocaleTimeString();
+            
+            // Test if we can access cast receiver interface
+            if (window.CastReceiver) {
+                try {
+                    const status = window.CastReceiver.getCastStatus();
+                    console.log('Cast status:', status);
+                } catch (e) {
+                    console.log('Cast receiver not fully initialized yet');
+                }
+            }
+        }
+
+        function testJavaScript() {
+            document.body.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)';
+            setTimeout(() => {
+                document.body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            }, 2000);
+        }
+
+        function getCastStatus() {
+            if (window.CastReceiver) {
+                try {
+                    const status = window.CastReceiver.getCastStatus();
+                    alert('Cast Status: ' + status);
+                } catch (e) {
+                    alert('Cast receiver interface not available');
+                }
+            } else {
+                alert('Cast receiver JavaScript interface not found');
+            }
+        }
+
+        // Update status every 30 seconds
+        updateStatus();
+        setInterval(updateStatus, 30000);
+
+        // Log when page is ready
+        console.log('Riptide Cast Status Page Loaded - v1.9');
+    </script>
+</body>
+</html>

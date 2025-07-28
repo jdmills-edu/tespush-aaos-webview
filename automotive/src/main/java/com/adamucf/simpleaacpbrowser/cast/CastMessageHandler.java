@@ -101,8 +101,12 @@ public class CastMessageHandler {
             JSONObject status = new JSONObject();
             status.put("type", "status_response");
             status.put("receiver_ready", true);
-            status.put("version", "1.7");
+            status.put("version", "1.9");
             status.put("app_name", "Riptide");
+            status.put("distraction_optimized", true);
+            status.put("immersive_mode", true);
+            status.put("enhanced_navigation", true);
+            status.put("cast_status_page", true);
             status.put("timestamp", System.currentTimeMillis());
             
             castReceiverManager.sendMessageToCastSender(

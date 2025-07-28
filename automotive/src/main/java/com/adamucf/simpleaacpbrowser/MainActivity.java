@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private WebView webView;
     private RelativeLayout rootLayout;
     private LinearLayout popoverMenu;
-    private Button btnHome, btnBack, btnForward, btnToggleTopPadding, btnToggleRightPadding;
+    private Button btnHome, btnBack, btnForward, btnToggleTopPadding, btnToggleRightPadding, btnCastReceiver, btnCastTest;
     private Handler hideHandler = new Handler();
     private Runnable hideRunnable;
     
@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
         btnForward = findViewById(R.id.btn_forward);
         btnToggleTopPadding = findViewById(R.id.btn_toggle_top_padding);
         btnToggleRightPadding = findViewById(R.id.btn_toggle_right_padding);
+        btnCastReceiver = findViewById(R.id.btn_cast_receiver);
+        btnCastTest = findViewById(R.id.btn_cast_test);
 
         // Configure WebView
         configureWebView();
@@ -123,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         
         // User agent - ensure modern web standards with DRM capabilities
-        settings.setUserAgentString(settings.getUserAgentString() + " AutomotiveWebView/1.7 Widevine/1.0 ChromecastReceiver/1.0");
+        settings.setUserAgentString(settings.getUserAgentString() + " AutomotiveWebView/1.9 Widevine/1.0 ChromecastReceiver/1.0 DistractionOptimized/1.0");
     }
 
     private void setupTouchHandling() {
@@ -227,6 +229,23 @@ public class MainActivity extends AppCompatActivity {
                 hidePopoverMenu();
             }
         });
+
+        btnCastReceiver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                webView.loadUrl("file:///android_asset/cast_status.html");
+                hidePopoverMenu();
+            }
+        });
+
+        btnCastTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Load the test sender page from the project root
+                webView.loadUrl("file:///android_asset/cast_test_sender.html");
+                hidePopoverMenu();
+            }
+        });
     }
 
     private void togglePopoverMenu() {
@@ -276,6 +295,10 @@ public class MainActivity extends AppCompatActivity {
         // Update padding button states visual indication
         btnToggleTopPadding.setAlpha(isTopPaddingEnabled ? 1.0f : 0.7f);
         btnToggleRightPadding.setAlpha(isRightPaddingEnabled ? 1.0f : 0.7f);
+        
+        // Cast buttons are always enabled
+        btnCastReceiver.setEnabled(true);
+        btnCastTest.setEnabled(true);
     }
 
     private void toggleTopPadding() {

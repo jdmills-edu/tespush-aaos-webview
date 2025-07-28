@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riptide Cast Sender Test</title>
+    <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .button {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        
+        .button:hover {
+            background: #3367d6;
+        }
+        
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .status {
+            background: #f8f9fa;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        input[type="text"] {
+            padding: 8px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            width: 300px;
+            margin: 5px;
+        }
+        
+        .section {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌊 Riptide Cast Sender Test</h1>
+    <p>Test the Chromecast receiver functionality of your Android Automotive WebView app (v1.9).</p>
+
+    <div class="section">
+        <h3>Connection</h3>
+        <button id="initButton" class="button">Initialize Cast</button>
+        <button id="castButton" class="button" disabled>Connect to Riptide</button>
+        <button id="stopButton" class="button" disabled>Stop Casting</button>
+        <div id="connectionStatus" class="status">Not initialized</div>
+    </div>
+
+    <div class="section">
+        <h3>URL Control</h3>
+        <input type="text" id="urlInput" placeholder="Enter URL to load" value="https://www.google.com">
+        <button id="loadUrlButton" class="button" disabled>Load URL</button>
+    </div>
+
+    <div class="section">
+        <h3>JavaScript Execution</h3>
+        <input type="text" id="jsInput" placeholder="JavaScript to execute" value="alert('Hello from Cast Sender!');">
+        <button id="executeJsButton" class="button" disabled>Execute JS</button>
+    </div>
+
+    <div class="section">
+        <h3>Navigation Control</h3>
+        <button id="toggleNavButton" class="button" disabled>Toggle Navigation Menu</button>
+        <button id="getStatusButton" class="button" disabled>Get Status</button>
+        <button id="pingButton" class="button" disabled>Ping Device</button>
+    </div>
+
+    <div class="section">
+        <h3>Response Log</h3>
+        <div id="responseLog" class="status">Waiting for responses...</div>
+    </div>
+
+    <script>
+        const APP_ID = 'CC1AD845'; // Default Media Receiver
+        const NAMESPACE = 'urn:x-cast:com.adamucf.riptide';
+        
+        let castContext = null;
+        let castSession = null;
+        
+        // UI Elements
+        const initButton = document.getElementById('initButton');
+        const castButton = document.getElementById('castButton');
+        const stopButton = document.getElementById('stopButton');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const responseLog = document.getElementById('responseLog');
+        
+        // Control buttons
+        const loadUrlButton = document.getElementById('loadUrlButton');
+        const executeJsButton = document.getElementById('executeJsButton');
+        const toggleNavButton = document.getElementById('toggleNavButton');
+        const getStatusButton = document.getElementById('getStatusButton');
+        const pingButton = document.getElementById('pingButton');
+        
+        // Input fields
+        const urlInput = document.getElementById('urlInput');
+        const jsInput = document.getElementById('jsInput');
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            responseLog.textContent = `[${timestamp}] ${message}\n` + responseLog.textContent;
+        }
+        
+        function updateConnectionStatus(status) {
+            connectionStatus.textContent = status;
+        }
+        
+        function updateUI(connected) {
+            castButton.disabled = connected;
+            stopButton.disabled = !connected;
+            loadUrlButton.disabled = !connected;
+            executeJsButton.disabled = !connected;
+            toggleNavButton.disabled = !connected;
+            getStatusButton.disabled = !connected;
+            pingButton.disabled = !connected;
+        }
+        
+        // Initialize Cast API
+        initButton.addEventListener('click', () => {
+            window.__onGCastApiAvailable = (isAvailable) => {
+                if (isAvailable) {
+                    initializeCastApi();
+                }
+            };
+        });
+        
+        function initializeCastApi() {
+            castContext = cast.framework.CastContext.getInstance();
+            castContext.setOptions({
+                receiverApplicationId: APP_ID,
+                autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+            });
+            
+            castContext.addEventListener(
+                cast.framework.CastContextEventType.CAST_STATE_CHANGED,
+                (event) => {
+                    log(`Cast state changed: ${event.castState}`);
+                }
+            );
+            
+            castContext.addEventListener(
+                cast.framework.CastContextEventType.SESSION_STATE_CHANGED,
+                (event) => {
+                    handleSessionChange(event.session);
+                }
+            );
+            
+            castButton.disabled = false;
+            updateConnectionStatus('Cast API initialized');
+            log('Cast API initialized successfully');
+        }
+        
+        function handleSessionChange(session) {
+            castSession = session;
+            if (session) {
+                updateConnectionStatus(`Connected to: ${session.getCastDevice().friendlyName}`);
+                updateUI(true);
+                
+                // Add message listener
+                session.addMessageListener(NAMESPACE, (namespace, message) => {
+                    log(`Received: ${message}`);
+                });
+                
+                log(`Session started with ${session.getCastDevice().friendlyName}`);
+            } else {
+                updateConnectionStatus('Not connected');
+                updateUI(false);
+                log('Session ended');
+            }
+        }
+        
+        // Cast connection
+        castButton.addEventListener('click', () => {
+            castContext.requestSession().then(
+                () => {
+                    log('Successfully requested session');
+                },
+                (error) => {
+                    log(`Error requesting session: ${error}`);
+                }
+            );
+        });
+        
+        // Stop casting
+        stopButton.addEventListener('click', () => {
+            if (castSession) {
+                castSession.endSession(true);
+            }
+        });
+        
+        // Send message helper
+        function sendMessage(message) {
+            if (castSession) {
+                castSession.sendMessage(NAMESPACE, JSON.stringify(message))
+                    .then(() => {
+                        log(`Sent: ${JSON.stringify(message)}`);
+                    })
+                    .catch((error) => {
+                        log(`Error sending message: ${error}`);
+                    });
+            }
+        }
+        
+        // Control functions
+        loadUrlButton.addEventListener('click', () => {
+            const url = urlInput.value.trim();
+            if (url) {
+                sendMessage({
+                    type: 'load_url',
+                    url: url
+                });
+            }
+        });
+        
+        executeJsButton.addEventListener('click', () => {
+            const javascript = jsInput.value.trim();
+            if (javascript) {
+                sendMessage({
+                    type: 'execute_js',
+                    javascript: javascript
+                });
+            }
+        });
+        
+        toggleNavButton.addEventListener('click', () => {
+            sendMessage({
+                type: 'toggle_navigation'
+            });
+        });
+        
+        getStatusButton.addEventListener('click', () => {
+            sendMessage({
+                type: 'get_status'
+            });
+        });
+        
+        pingButton.addEventListener('click', () => {
+            sendMessage({
+                type: 'ping',
+                data: {
+                    timestamp: Date.now(),
+                    message: 'Hello from sender'
+                }
+            });
+        });
+        
+        // Auto-initialize when Cast API is available
+        if (typeof cast !== 'undefined') {
+            initializeCastApi();
+        }
+    </script>
+</body>
+</html>

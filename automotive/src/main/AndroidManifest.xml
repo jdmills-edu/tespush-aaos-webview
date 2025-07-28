@@ -36,6 +36,16 @@
     <uses-feature
         android:name="android.software.webview"
         android:required="true" />
+        
+    <!-- Automotive distraction optimization -->
+    <uses-feature
+        android:name="android.software.car.templates_host"
+        android:required="false" />
+        
+    <!-- Immersive experience support -->
+    <uses-feature
+        android:name="android.software.car.projection_host"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -48,14 +58,41 @@
         android:usesCleartextTraffic="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:hardwareAccelerated="true">
+        
+        <!-- Android Automotive Optimizations -->
+        <meta-data
+            android:name="distractionOptimized"
+            android:value="true" />
+        <meta-data
+            android:name="android.car.application"
+            android:resource="@xml/automotive_app_desc" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|screenSize|keyboardHidden">
+            
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.APP_BROWSER" />
             </intent-filter>
+            
+            <!-- Mark this activity as distraction optimized -->
+            <meta-data
+                android:name="distractionOptimized"
+                android:value="true" />
+                
+            <!-- Immersive mode support -->
+            <meta-data
+                android:name="android.app.immersive"
+                android:value="true" />
+                
+            <!-- Automotive specific metadata -->
+            <meta-data
+                android:name="android.app.automotive.ACTIVITY_TYPE"
+                android:value="media" />
         </activity>
         
         <!-- Chromecast Receiver Service -->
