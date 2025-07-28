@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         
         // User agent - ensure modern web standards with DRM capabilities
-        settings.setUserAgentString(settings.getUserAgentString() + " AutomotiveWebView/1.9 Widevine/1.0 ChromecastReceiver/1.0 DistractionOptimized/1.0");
+        settings.setUserAgentString(settings.getUserAgentString() + " AutomotiveWebView/2.0 Widevine/1.0 ChromecastReceiver/1.0 DistractionOptimized/1.0");
     }
 
     private void setupTouchHandling() {

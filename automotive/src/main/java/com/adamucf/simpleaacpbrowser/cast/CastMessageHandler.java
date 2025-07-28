@@ -101,7 +101,7 @@ public class CastMessageHandler {
             JSONObject status = new JSONObject();
             status.put("type", "status_response");
             status.put("receiver_ready", true);
-            status.put("version", "1.9");
+            status.put("version", "2.0");
             status.put("app_name", "Riptide");
             status.put("distraction_optimized", true);
             status.put("immersive_mode", true);
